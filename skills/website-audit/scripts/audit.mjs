@@ -165,7 +165,7 @@ function runLighthouse(url, outFile) {
     if (maj < 22 || (maj === 22 && min < 19)) return res({ skipped: `Lighthouse ${LH_VERSION} needs Node >= 22.19 (found ${process.versions.node})` });
     const npx = process.platform === "win32" ? "npx.cmd" : "npx";
     const args = ["--yes", `lighthouse@${LH_VERSION}`, url, "--output=json", `--output-path=${outFile}`, "--only-categories=performance",
-      "--quiet", "--chrome-flags=--headless=new --no-sandbox --disable-gpu"];
+      "--quiet", "--chrome-flags=--headless=new --disable-gpu"];
     const p = spawn(npx, args, { env: { ...process.env, CHROME_PATH: CHROME }, stdio: ["ignore", "ignore", "pipe"], shell: process.platform === "win32" });
     let err = "";
     p.stderr.on("data", d => { err += d.toString(); if (err.length > 4000) err = err.slice(-4000); });

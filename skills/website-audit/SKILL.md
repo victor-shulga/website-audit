@@ -95,6 +95,20 @@ If the user wants it re-rendered after editing thresholds:
 `node <skill-dir>/scripts/report.mjs <path-to-run>.json` rewrites the markdown from
 the JSON.
 
+### 5. If the user also asks you to fix (own site or codebase only)
+
+The audit itself stays read-only. Fixing is a separate loop, one finding per round
+(pattern borrowed from the agent-skills collection by Addy Osmani, MIT):
+
+1. Take the top P0/P1 from «Fix first». The JSON of this run is the baseline.
+2. Find the cause in the source (template, generator, CSS), not in the built output.
+3. Make one change, committed or stashed state before it, so the roll back is `git checkout -- <files>`.
+4. Re-run the same command with the same `--limit` (or `--limit 1` on the affected page for speed).
+5. Finding gone and no new P0/P1 → keep it. Finding still there, or a new P0/P1 appeared →
+   **roll back** and say so; never stack the next fix on a change that did not work.
+6. Report a table: finding · change · before · after · kept / rolled back.
+   Performance numbers are noisy: for a performance finding run the page 3 times before and 3 times after, and compare the medians.
+
 ## What each area covers
 
 Details, thresholds and the priority rules are in
